@@ -83,6 +83,9 @@ def main(filename):
             rede = []
             rede_id = re.sub('.*rede id="([^"]+)".*', r'\1', line)
 
+        # Überprüfung auf das Sitzungsende.
+        if re.search('<sitzungsende', line):
+            break # Schleife beenden, wenn das Ende der Sitzung erreicht ist.
         
     print (print_text)
     
@@ -106,4 +109,3 @@ if __name__ == '__main__':
         main(argv[1])
     else:
         stderr.write("Error: Wrong number of arguments.\n")
-
