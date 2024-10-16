@@ -16,6 +16,9 @@ def main(filename):
     for i, line in enumerate(content):
         line = re.sub('[\s]+', ' ', line)
 
+        if re.search('sitzung-nr', line):
+            sitzung = re.sub('.*sitzung-nr="([^"]+)".*', r'\1', line)
+
         if re.search('sitzung-datum', line):
             datum = re.sub('.*sitzung-datum="([^"]+)".*', r'\1', line)
 
@@ -48,7 +51,7 @@ def main(filename):
         if re.search('</rede>', line):
             in_rede = False
             gesamte_rede = ' ## '.join(rede)
-            print_text += '\n' + rede_id + '\t' + datum + '\t' + redner + '\t' + gesamte_rede
+            print_text += '\n' + sitzung + '\t' + datum + '\t' + rede_id + '\t' + redner + '\t' + gesamte_rede
 
         if re.search('<sitzungsende', line):
             break
