@@ -19,7 +19,7 @@ predicted_labels = []
 total_rows = len(df)
 print(f"Starte die Klassifikation von {total_rows} Zeilen...")
 
-for index, text in enumerate(df.iloc[:, 3]):
+for index, text in enumerate(df.iloc[:, 4]):
     if pd.isnull(text):
         predicted_labels.append("Keine Daten")
         print(f"Zeile {index + 1}/{total_rows}: Übersprungen (Keine Daten)")
@@ -28,7 +28,7 @@ for index, text in enumerate(df.iloc[:, 3]):
     result = classifier(text, candidate_labels=categories)
     best_label = result["labels"][0]
     predicted_labels.append(best_label)
-    print(f"Zeile {index + 1}/{total_rows}: Klassifiziert als '{best_label}'")
+    print(f"{best_label} - '{text}'")
 
 df["prediction"] = predicted_labels
 df.to_csv(output_csv_path, sep='\t', index=False)
