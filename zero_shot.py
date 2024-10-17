@@ -1,19 +1,13 @@
 import pandas as pd
 from transformers import pipeline
-import os
 
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 
-input_csv_path = "out/output.csv"
+input_csv_path = "out/output_191.csv"
 output_csv_path = "zeroshot/output_zeroshot.csv"
 
-df = pd.read_csv(input_csv_path, sep='\t')
+df = pd.read_csv(input_csv_path, sep='\t', header=None)
 categories = ["Kriminelle", "Nützliche", "Kostenintensive", "Integrationswillige", "Willkommene"]
-
-if not os.path.exists(output_csv_path):
-    df["prediction"] = ""
-    df.to_csv(output_csv_path, sep='\t', index=False)
-    print(f"Die Datei '{output_csv_path}' wurde erstellt.")
 
 predicted_labels = []
 total_rows = len(df)
@@ -31,6 +25,6 @@ for index, text in enumerate(df.iloc[:, 4]):
     print(f"{best_label} - '{text}'")
 
 df["prediction"] = predicted_labels
-df.to_csv(output_csv_path, sep='\t', index=False)
+df.to_csv(output_csv_path, sep='\t', index=False, header=False)
 
 print(f"Klassifizierung abgeschlossen! Ergebnisse wurden in '{output_csv_path}' gespeichert.")
