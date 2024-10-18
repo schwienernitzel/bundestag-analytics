@@ -1,0 +1,1 @@
+grep -iE ".*(einwander|zuwander|auswander|eingewandert|zugewandert|migrant|migrier|ausgewandert|zugezogene).*" output_191.csv > output_191_filter.csv
