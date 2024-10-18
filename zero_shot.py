@@ -1,30 +1,61 @@
-import pandas as pd
+use_cuda=True
+
+import re
+from datetime import datetime
 from transformers import pipeline
 
-classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+filename = 'output_191_filter.csv'
 
-input_csv_path = "out/output_191.csv"
-output_csv_path = "zeroshot/output_zeroshot.csv"
+corpus = []
+comments = []
+with open(filename, "r") as file_content:
+    for line in file_content.readlines():
+        line = line.strip()
+        cells = line.split('\t')
+        if len(cells) < 4:
+            continue
+        text = cells[4]
+        corpus.append(line)
+        comments.append(text)
 
-df = pd.read_csv(input_csv_path, sep='\t', header=None)
-categories = ["Kriminelle", "Nützliche", "Kostenintensive", "Integrationswillige", "Willkommene"]
+labels_thema = ['Migration', 'Wirtschaft', 'Bildung', 'Begrüßung', 'Sonstiges']
+labels_standpunkt = ['Kriminelle', 'Nützliche', 'Kostenintensive', 'Integrationswillige', 'Willkommene']
+classifier = pipeline("zero-shot-classification", model="joeddav/xlm-roberta-large-xnli")
 
-predicted_labels = []
-total_rows = len(df)
-print(f"Starte die Klassifikation von {total_rows} Zeilen...")
+for k, comment in enumerate(comments):
+    out = classifier(comment, labels_thema)
+    highest_score = 0
+    score_for_migration = 0
+    highest_label = '-'
+    scores = out['scores']
 
-for index, text in enumerate(df.iloc[:, 4]):
-    if pd.isnull(text):
-        predicted_labels.append("Keine Daten")
-        print(f"Zeile {index + 1}/{total_rows}: Übersprungen (Keine Daten)")
-        continue
+    for i, score in enumerate(scores):
+        if out['labels'][i] == 'Migration':
+            score_for_migration = score
+        if score > highest_score:
+            highest_score = score
+            highest_label = out['labels'][i]
 
-    result = classifier(text, candidate_labels=categories)
-    best_label = result["labels"][0]
-    predicted_labels.append(best_label)
-    print(f"{best_label} - '{text}'")
+    print_line = highest_label+'\t'+str(highest_score)+'\t'+str(score_for_migration)
 
-df["prediction"] = predicted_labels
-df.to_csv(output_csv_path, sep='\t', index=False, header=False)
+    if (highest_label == 'Migration'):
+        out = classifier(comment, labels_standpunkt)
+        highest_score = 0
+        highest_label = '-'
+        scores = out['scores']
 
-print(f"Klassifizierung abgeschlossen! Ergebnisse wurden in '{output_csv_path}' gespeichert.")
+        for i, score in enumerate(scores):
+            if score > highest_score:
+                highest_score = score
+                highest_label = out['labels'][i]
+                print_line += '\t'+highest_label+'\t'+str(highest_score)
+    else:
+        print_line += '\t - \t - '
+
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print_line += '\t'+str(now)
+    print_line += '\t'+corpus[k]+'\n'
+    print (print_line)
+
+    with open('output_annotated.csv', 'a') as writefile:
+        writefile.write(print_line)
