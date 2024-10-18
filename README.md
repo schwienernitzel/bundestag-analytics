@@ -4,6 +4,7 @@
 
 ```bash
 cd protocols && ls *.xml | wc -l  ## Check total number of protocols
+cd protocols && grep -Hrn "endgültige Stenografische"  ## Check for incomplete protocols
 python3 execute.py > output.csv  ## Run the conversion script
 sed -i '/<redner id="[^:]*:/d' output.csv  ## Remove regex leftovers
 sed -i 's/#//g' output.csv  ## Remove seperators
