@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 from transformers import pipeline
 
-filename = 'output_191_filter.csv'
+filename = 'output.csv'
 
 corpus = []
 comments = []
@@ -18,7 +18,10 @@ with open(filename, "r") as file_content:
         corpus.append(line)
         comments.append(text)
 
-labels_thema = ['Migration', 'Wirtschaft', 'Bildung', 'Begrüßung', 'Sonstiges']
+labels_thema = ['Antisemitismus', 'Begrüßung', 'Brexit', 'Cannabis', 'China', 'Corona', 'Digitalisierung',
+                'Diskriminierung', 'Energiesicherheit', 'Familie', 'Gastronomie', 'Gesundheit', 'Inflation',
+                'Israel', 'Klimaschutz', 'Korruption', 'Krankheiten', 'Landwirtschaft', 'Migration', 'Militär',
+                'Nordstream', 'Organisatorisches', 'Ukraine', 'Vorratsdatenspeicherung']
 labels_standpunkt = ['Kriminelle', 'Nützliche', 'Kostenintensive', 'Integrationswillige', 'Willkommene']
 classifier = pipeline("zero-shot-classification", model="joeddav/xlm-roberta-large-xnli")
 
