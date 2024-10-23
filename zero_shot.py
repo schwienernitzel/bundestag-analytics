@@ -1,10 +1,13 @@
+#!pip install transformers
+#!pip install tf-keras
+
 use_cuda=True
 
 import re
 from datetime import datetime
 from transformers import pipeline
 
-filename = 'output.csv'
+filename = '/Users/felix/Desktop/bundestag_XMLparser/out/output_migration.csv'
 
 corpus = []
 comments = []
@@ -18,10 +21,7 @@ with open(filename, "r") as file_content:
         corpus.append(line)
         comments.append(text)
 
-labels_thema = ['Antisemitismus', 'Begrüßung', 'Brexit', 'Cannabis', 'China', 'Corona', 'Digitalisierung',
-                'Diskriminierung', 'Energiesicherheit', 'Familie', 'Gastronomie', 'Gesundheit', 'Inflation',
-                'Israel', 'Klimaschutz', 'Korruption', 'Krankheiten', 'Landwirtschaft', 'Migration', 'Militär',
-                'Nordstream', 'Organisatorisches', 'Ukraine', 'Vorratsdatenspeicherung']
+labels_thema = ['Migration']
 labels_standpunkt = ['Kriminelle', 'Nützliche', 'Kostenintensive', 'Integrationswillige', 'Willkommene']
 classifier = pipeline("zero-shot-classification", model="joeddav/xlm-roberta-large-xnli")
 
@@ -60,5 +60,5 @@ for k, comment in enumerate(comments):
     print_line += '\t'+corpus[k]+'\n'
     print (print_line)
 
-    with open('output_annotated.csv', 'a') as writefile:
+    with open('/Users/felix/Desktop/output_migration-annotated.csv', 'a') as writefile:
         writefile.write(print_line)
