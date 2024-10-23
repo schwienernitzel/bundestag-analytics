@@ -9,6 +9,7 @@ python3 execute.py > output.csv  ## Run the conversion script
 sed -i '/<redner id="[^:]*:/d' output.csv  ## Remove regex leftovers
 sed -i 's/#//g' output.csv  ## Remove seperators
 sed -i 's/[0-9]\+Anlage.*//g' output.csv  ## Remove more leftovers
+cd out && wc -l output.csv  ## Check total number of lines
 cd out && grep -i "migration" output.csv > output_migration.csv  ## Filter for keywords (e.g. "migration")
 ```
 
