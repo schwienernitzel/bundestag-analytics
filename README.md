@@ -9,6 +9,7 @@ python3 execute.py > output.csv  ## Run the conversion script
 sed -i '/<redner id="[^:]*:/d' output.csv  ## Remove regex leftovers
 sed -i 's/#//g' output.csv  ## Remove seperators
 sed -i 's/[0-9]\+Anlage.*//g' output.csv  ## Remove more leftovers
+cd out && grep -i "migration" output.csv > output_migration.csv  ## Filter for keywords (e.g. "migration")
 ```
 
 > Note: Install `python3` on your current runtime, which preferably should be a Linux distribution. If you use this parser for the first time, you can also run `./quick_run.sh` inside of your Terminal.
