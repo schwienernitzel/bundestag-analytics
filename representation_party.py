@@ -15,7 +15,7 @@ fraktion_title_map = {
     "bündnis 90/die grünen": "Fraktion Bündnis 90/Die Grünen",
     "die linke": "Gruppe Die Linke",
     "bsw": "Gruppe BSW",
-    "fraktionslos": "Fraktionslose Abgeordnete",
+    "fraktionslos": "Fraktionslose & Andere",
     "bundes": "Mitglieder der Bundesregierung"
 }
 
@@ -26,18 +26,30 @@ tag_color_map = {tag: colors[i] for i, tag in enumerate(unique_tags)}
 fig, axes = plt.subplots(3, 3, figsize=(15, 10))
 axes = axes.flatten()
 total_rows = len(data)
+total_counted = 0
 
 for i, fraktion in enumerate(fraktionen):
     fraktion_tags = tags[redner_fraktionen_lower.str.contains(fraktion, na=False)]
     tag_counts = Counter(fraktion_tags)
-    labels = list(tag_counts.keys())
-    sizes = list(tag_counts.values())
-    total = sum(sizes)
+    total = sum(tag_counts.values())
+
+    if fraktion == "fraktionslos":
+        remaining = total_rows - total_counted
+        if remaining > 0:
+            remaining_tags = tags[~redner_fraktionen_lower.str.contains('|'.join(fraktionen), na=False)]
+            remaining_counts = Counter(remaining_tags)
+            for tag, count in remaining_counts.items():
+                tag_counts[tag] += count
+            total = sum(tag_counts.values())
+
+    total_counted += total
     title = fraktion_title_map.get(fraktion, fraktion.upper())
     title_with_count = f'{title} ({total} Beiträge)'
     ax = axes[i]
 
     if total > 0:
+        labels = list(tag_counts.keys())
+        sizes = list(tag_counts.values())
         wedges, texts, autotexts = ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90,
                                           colors=[tag_color_map[label] for label in labels])
         ax.set_title(f'{title_with_count}')
@@ -51,5 +63,6 @@ handles = [plt.Line2D([0], [0], marker='o', color='w', label=tag,
                       markersize=10, markerfacecolor=tag_color_map[tag]) for tag in unique_tags]
 fig.legend(handles=handles, title=f"Insgesamt: {total_rows} Redebeiträge", loc='center',
            bbox_to_anchor=(0.5, 0.05), ncol=3)
+
 plt.tight_layout(rect=[0, 0.1, 1, 1])
 plt.show()
