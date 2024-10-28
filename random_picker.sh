@@ -20,6 +20,6 @@ fi
 
 echo "Picking $AMOUNT random lines from $input_file..."
 
-shuf -n "$AMOUNT" "$input_file" > "$output_file"
+grep -v '^$' "$input_file" | shuf -n "$AMOUNT" > "$output_file"
 
 echo -e "\033[32mDone! File has been saved to $output_file\033[0m"
