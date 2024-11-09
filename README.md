@@ -1,5 +1,3 @@
-## XMLparser: Parse speeches of German plenary sessions (Bundestag)
-
 ### Usage:
 
 ```bash
