@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 from transformers import pipeline
 
-filename = '/Users/felix/Desktop/bundestag-analytics/output/dataset-filtered.csv'
+filename = '/Users/felix/Desktop/bundestag-analytics/output/dataset-migrant.csv'
 
 corpus = []
 comments = []
@@ -21,7 +21,7 @@ with open(filename, "r") as file_content:
         corpus.append(line)
         comments.append(text)
 
-labels_standpunkt = ['Migranten sind kriminell', 'Migranten sind nützlich', 'Migranten sind kostenintensiv', 'Migranten sind integrationswillig', 'Migranten sind willkommen']
+labels_standpunkt = ['krimineller Migrant', 'nutzbringender Migrant', 'kostenintensiver Migrant', 'integrationswilliger Migrant', 'willkommener Migrant', 'unerwünschter Migrant', 'schutzbedürftiger Migrant']
 classifier = pipeline("zero-shot-classification", model="joeddav/xlm-roberta-large-xnli")
 
 for k, comment in enumerate(comments):
@@ -42,5 +42,5 @@ for k, comment in enumerate(comments):
     print_line += '\t' + corpus[k] + '\n'
     print(print_line)
 
-    with open('/Users/felix/Desktop/bundestag-analytics/output/dataset-annotated.csv', 'a') as writefile:
+    with open('/Users/felix/Desktop/bundestag-analytics/output/dataset-migrant-annotated.csv', 'a') as writefile:
         writefile.write(print_line)
