@@ -8,7 +8,7 @@ sed -i '/<redner id="[^:]*:/d' output.csv  ## Remove regex leftovers
 sed -i 's/#//g' output.csv  ## Remove seperators
 sed -i 's/[0-9]\+Anlage.*//g' output.csv  ## Remove more leftovers
 wc -l output.csv  ## Check total number of lines
-grep -i "migration" output.csv > output_migration.csv  ## Filter for context, e.g. "migration"
+grep -i "migrant" output.csv > output_migration.csv  ## Filter for context, e.g. "migration"
 jupyter notebook --no-browser --port=8888  ## Start a local jupyter environment
 ```
 
