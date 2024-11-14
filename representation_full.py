@@ -2,9 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
 
-data = pd.read_csv('out/output_migration-annotated.csv', delimiter='\t', header=None)
+data = pd.read_csv('output/migrant-filtered-annotated4.csv', delimiter='\t', header=None)
 
-tags = data[3]
+tags = data[0]
 tag_counts = Counter(tags)
 labels = list(tag_counts.keys())
 sizes = list(tag_counts.values())

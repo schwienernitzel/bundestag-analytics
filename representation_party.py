@@ -2,9 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
 
-data = pd.read_csv('out/output_migration-annotated.csv', delimiter='\t', header=None)
-tags = data[3]
-redner_fraktionen = data[9]
+data = pd.read_csv('output/migrant-filtered-annotated4.csv', delimiter='\t', header=None)
+tags = data[0]
+redner_fraktionen = data[6]
 
 fraktionen = ["afd", "cdu/csu", "fdp", "spd", "bündnis 90/die grünen", "die linke", "bsw", "fraktionslos", "bundes"]
 fraktion_title_map = {
