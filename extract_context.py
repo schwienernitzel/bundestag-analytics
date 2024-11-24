@@ -1,8 +1,8 @@
 import pandas as pd
 import re
 
-input_file = 'output/dataset-filtered.csv'
-output_file = 'output/dataset-extracted.csv'
+input_file = 'output/dataset-filtered-241124.csv'
+output_file = 'output/dataset-extracted-241124.csv'
 keywords_regex = r"(migration|flüchtling|asyl|einwanderung|zuwanderung)"
 df = pd.read_csv(input_file, header=None, sep='\t', encoding='utf-8')
 
