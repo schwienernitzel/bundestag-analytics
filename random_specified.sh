@@ -5,12 +5,6 @@ if [ -z "$AMOUNT" ]; then
     exit 1
 fi
 
-if [ -z "$FILTER" ]; then
-    echo "Please set the FILTER environment variable before running the script."
-    echo "Example: export FILTER=Kriminelle"
-    exit 1
-fi
-
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <input_file.csv> <output_file.csv>"
     exit 1
@@ -24,8 +18,16 @@ if [ ! -f "$input_file" ]; then
     exit 1
 fi
 
-echo "Picking $AMOUNT random lines containing $FILTER from $input_file..."
+echo "Picking $AMOUNT random lines per label from $input_file..."
 
-grep "$FILTER" "$input_file" | shuf -n "$AMOUNT" > "$output_file"
+labels=("Kriminelle" "Kostenintensive" "Willkommene" "Nutzbringende")
+
+> "$output_file"
+
+lines_per_label=$((AMOUNT / ${#labels[@]}))
+
+for label in "${labels[@]}"; do
+    grep "^$label" "$input_file" | shuf -n "$lines_per_label" >> "$output_file"
+done
 
 echo -e "\033[32mDone! File has been saved to $output_file\033[0m"
