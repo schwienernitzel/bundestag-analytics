@@ -2,10 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
 
-data = pd.read_csv('output/migrant-filtered-annotated4.csv', delimiter='\t', header=None)
+data = pd.read_csv('output/dataset-annotated-241124.csv', delimiter='\t', header=None)
 tags = data[0]
 redner_fraktionen = data[6]
-
+valid_tags = ["Kriminelle", "Kostenintensive", "Willkommene", "Nutzbringende"]
 fraktionen = ["afd", "cdu/csu", "fdp", "spd", "bündnis 90/die grünen", "die linke", "bsw", "fraktionslos", "bundes"]
 fraktion_title_map = {
     "afd": "AfD-Fraktion",
@@ -19,13 +19,14 @@ fraktion_title_map = {
     "bundes": "Mitglieder der Bundesregierung"
 }
 
+tags = tags[tags.isin(valid_tags)]
 redner_fraktionen_lower = redner_fraktionen.str.lower()
-unique_tags = tags.unique()
+unique_tags = valid_tags
 colors = plt.cm.tab10(range(len(unique_tags)))
 tag_color_map = {tag: colors[i] for i, tag in enumerate(unique_tags)}
 fig, axes = plt.subplots(3, 3, figsize=(15, 10))
 axes = axes.flatten()
-total_rows = len(data)
+total_rows = len(tags)
 total_counted = 0
 
 for i, fraktion in enumerate(fraktionen):
@@ -41,7 +42,6 @@ for i, fraktion in enumerate(fraktionen):
             for tag, count in remaining_counts.items():
                 tag_counts[tag] += count
             total = sum(tag_counts.values())
-
     total_counted += total
     title = fraktion_title_map.get(fraktion, fraktion.upper())
     title_with_count = f'{title} ({total} Beiträge)'
@@ -50,8 +50,10 @@ for i, fraktion in enumerate(fraktionen):
     if total > 0:
         labels = list(tag_counts.keys())
         sizes = list(tag_counts.values())
-        wedges, texts, autotexts = ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90,
-                                          colors=[tag_color_map[label] for label in labels])
+        wedges, texts, autotexts = ax.pie(
+            sizes, labels=labels, autopct='%1.1f%%', startangle=90,
+            colors=[tag_color_map[label] for label in labels]
+        )
         ax.set_title(f'{title_with_count}')
         ax.axis('equal')
     else:
@@ -63,6 +65,5 @@ handles = [plt.Line2D([0], [0], marker='o', color='w', label=tag,
                       markersize=10, markerfacecolor=tag_color_map[tag]) for tag in unique_tags]
 fig.legend(handles=handles, title=f"Insgesamt: {total_rows} Redebeiträge", loc='center',
            bbox_to_anchor=(0.5, 0.05), ncol=3)
-
 plt.tight_layout(rect=[0, 0.1, 1, 1])
 plt.show()
