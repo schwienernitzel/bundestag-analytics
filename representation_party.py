@@ -2,10 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
 
-data = pd.read_csv('output/dataset-annotated-241124.csv', delimiter='\t', header=None)
+data = pd.read_csv('/Users/felix/Desktop/BAabbildungen/flucht_new3.csv', delimiter='\t', header=None)
 tags = data[0]
 redner_fraktionen = data[6]
-valid_tags = ["Kriminelle", "Kostenintensive", "Willkommene", "Nutzbringende"]
+valid_tags = ['Flüchtlinge sind kriminell', 'Flüchtlinge sind kostenintensiv', 'Flüchtlinge sind willkommen']
 fraktionen = ["afd", "cdu/csu", "fdp", "spd", "bündnis 90/die grünen", "die linke", "bsw", "fraktionslos", "bundes"]
 fraktion_title_map = {
     "afd": "AfD-Fraktion",
@@ -16,7 +16,7 @@ fraktion_title_map = {
     "die linke": "Gruppe Die Linke",
     "bsw": "Gruppe BSW",
     "fraktionslos": "Fraktionslose & Andere",
-    "bundes": "Mitglieder der Bundesregierung"
+    "bundes": "Mitglieder der Bundesregierung u. Sonstige"
 }
 
 tags = tags[tags.isin(valid_tags)]
@@ -51,9 +51,14 @@ for i, fraktion in enumerate(fraktionen):
         labels = list(tag_counts.keys())
         sizes = list(tag_counts.values())
         wedges, texts, autotexts = ax.pie(
-            sizes, labels=labels, autopct='%1.1f%%', startangle=90,
+            sizes, autopct='%1.1f%%', startangle=90,
             colors=[tag_color_map[label] for label in labels]
         )
+        for text in texts:
+            text.set_text("")
+        for autotext in autotexts:
+            autotext.set_color('black')
+            autotext.set_fontsize(10)
         ax.set_title(f'{title_with_count}')
         ax.axis('equal')
     else:
